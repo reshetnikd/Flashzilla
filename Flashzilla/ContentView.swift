@@ -23,9 +23,35 @@ struct ContentView: View {
     @State private var engine: CHHapticEngine?
     
     var body: some View {
-        Text("Hello, World!")
-            .onAppear(perform: prepareHaptics)
-            .onTapGesture(perform: complexSuccess)
+        VStack {
+            Text("Hello")
+            Spacer().frame(height: 100)
+            Text("World")
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            print("VStack tapped!")
+        }
+//        ZStack {
+//            Rectangle()
+//                .fill(Color.blue)
+//                .frame(width: 300, height: 300)
+//                .onTapGesture {
+//                    print("Rectangle tapped!")
+//                }
+//
+//            Circle()
+//                .fill(Color.red)
+//                .frame(width: 300, height: 300)
+//                .contentShape(Rectangle())
+//                .onTapGesture {
+//                    print("Circle tapped!")
+//                }
+//                .allowsHitTesting(false)
+//        }
+//        Text("Hello, World!")
+//            .onAppear(perform: prepareHaptics)
+//            .onTapGesture(perform: complexSuccess)
 //        // a drag gesture that updates offset and isDragging as it moves around
 //        let dragGesture = DragGesture()
 //            .onChanged { value in self.offset = value.translation }
