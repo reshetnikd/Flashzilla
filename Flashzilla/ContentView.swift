@@ -20,29 +20,73 @@ struct ContentView: View {
 //
 //    // whether it is currently being dragged or not
 //    @State private var isDragging = false
+    @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) var reduceTransparency
+    
+    @State private var scale: CGFloat = 1
     @State private var engine: CHHapticEngine?
     @State private var counter = 0
     
     let timer = Timer.publish(every: 1, tolerance: 0.5, on: .main, in: .common).autoconnect()
     
     var body: some View {
-        VStack {
-            Text("Hello")
-            Spacer().frame(height: 100)
-            Text("World")
-                .onReceive(timer) { time in
-                    if self.counter == 5 {
-                        self.timer.upstream.connect().cancel()
-                    } else {
-                        print("The time is now \(time)")
-                    }
-                    self.counter += 1
-                }
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            print("VStack tapped!")
-        }
+        Text("Hello, World!")
+            .padding()
+            .background(reduceTransparency ? Color.black : Color.black.opacity(0.5))
+            .foregroundColor(Color.white)
+            .clipShape(Capsule())
+//        HStack {
+//            if differentiateWithoutColor {
+//                Image(systemName: "checkmark.circle")
+//            }
+//
+//            Text("Success")
+//                .scaleEffect(scale)
+//                .onTapGesture {
+//                    self.withOptionalAnimation {
+//                        self.scale *= 1.5
+//                    }
+////                    if self.reduceMotion {
+////                        self.scale *= 1.5
+////                    } else {
+////                        withAnimation {
+////                            self.scale *= 1.5
+////                        }
+////                    }
+//                }
+//        }
+//        .padding()
+//        .background(differentiateWithoutColor ? Color.black : Color.green)
+//        .foregroundColor(Color.white)
+//        .clipShape(Capsule())
+        
+//        VStack {
+//            Text("Hello")
+//            Spacer().frame(height: 100)
+//            Text("World")
+//                .onReceive(NotificationCenter.default.publisher(for: UIApplication.userDidTakeScreenshotNotification)) { _ in
+//                    print("User took a screenshot!")
+//                }
+//                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+//                    print("Moving back to the foreground!")
+//                }
+//                .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+//                    print("Moving to the backgtound!")
+//                }
+//                .onReceive(timer) { time in
+//                    if self.counter == 5 {
+//                        self.timer.upstream.connect().cancel()
+//                    } else {
+//                        print("The time is now \(time)")
+//                    }
+//                    self.counter += 1
+//                }
+//        }
+//        .contentShape(Rectangle())
+//        .onTapGesture {
+//            print("VStack tapped!")
+//        }
 //        ZStack {
 //            Rectangle()
 //                .fill(Color.blue)
@@ -133,6 +177,14 @@ struct ContentView: View {
 //            }) {
 //                print("Long pressed!")
 //            }
+    }
+    
+    func withOptionalAnimation<Result>(_ animation: Animation? = .default, _ body: () throws -> Result) rethrows -> Result {
+        if UIAccessibility.isReduceMotionEnabled {
+            return try body()
+        } else {
+            return try withAnimation(animation, body)
+        }
     }
     
     func simpleSuccess() {
