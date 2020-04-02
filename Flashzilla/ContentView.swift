@@ -21,12 +21,23 @@ struct ContentView: View {
 //    // whether it is currently being dragged or not
 //    @State private var isDragging = false
     @State private var engine: CHHapticEngine?
+    @State private var counter = 0
+    
+    let timer = Timer.publish(every: 1, tolerance: 0.5, on: .main, in: .common).autoconnect()
     
     var body: some View {
         VStack {
             Text("Hello")
             Spacer().frame(height: 100)
             Text("World")
+                .onReceive(timer) { time in
+                    if self.counter == 5 {
+                        self.timer.upstream.connect().cancel()
+                    } else {
+                        print("The time is now \(time)")
+                    }
+                    self.counter += 1
+                }
         }
         .contentShape(Rectangle())
         .onTapGesture {
