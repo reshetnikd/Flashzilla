@@ -13,6 +13,8 @@
 		351254142434FF3B00FB070A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 351254132434FF3B00FB070A /* Assets.xcassets */; };
 		351254172434FF3B00FB070A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 351254162434FF3B00FB070A /* Preview Assets.xcassets */; };
 		3512541A2434FF3B00FB070A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 351254182434FF3B00FB070A /* LaunchScreen.storyboard */; };
+		35CF8117243789C800AA306A /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CF8116243789C800AA306A /* Card.swift */; };
+		35CF811924378B5C00AA306A /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35CF811824378B5C00AA306A /* CardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		351254162434FF3B00FB070A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		351254192434FF3B00FB070A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3512541B2434FF3B00FB070A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		35CF8116243789C800AA306A /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		35CF811824378B5C00AA306A /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +62,8 @@
 			children = (
 				3512540D2434FF3800FB070A /* AppDelegate.swift */,
 				3512540F2434FF3800FB070A /* SceneDelegate.swift */,
+				35CF8116243789C800AA306A /* Card.swift */,
+				35CF811824378B5C00AA306A /* CardView.swift */,
 				351254112434FF3800FB070A /* ContentView.swift */,
 				351254132434FF3B00FB070A /* Assets.xcassets */,
 				351254182434FF3B00FB070A /* LaunchScreen.storyboard */,
@@ -149,6 +155,8 @@
 				3512540E2434FF3800FB070A /* AppDelegate.swift in Sources */,
 				351254102434FF3800FB070A /* SceneDelegate.swift in Sources */,
 				351254122434FF3800FB070A /* ContentView.swift in Sources */,
+				35CF8117243789C800AA306A /* Card.swift in Sources */,
+				35CF811924378B5C00AA306A /* CardView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
