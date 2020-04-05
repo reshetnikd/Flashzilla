@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import CoreHaptics
 
 struct ContentView: View {
     @Environment(\.accessibilityDifferentiateWithoutColor) var differentiateWithoutColor
@@ -15,8 +16,8 @@ struct ContentView: View {
     @State private var timeRemaining = 100
     @State private var isActive = true
     @State private var showingEditScreen = false
-    
-    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    @State private var engine: CHHapticEngine?
+    @State private var timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         ZStack {
@@ -26,15 +27,17 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.all)
             VStack {
                 Text("Time: \(timeRemaining)")
-                .font(.largeTitle)
-                .foregroundColor(.white)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 5)
-                .background(
-                    Capsule()
-                        .fill(Color.black)
-                        .opacity(0.75)
-                )
+                    .font(.largeTitle)
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 5)
+                    .background(
+                        Capsule()
+                            .fill(Color.black)
+                            .opacity(0.75)
+                    )
+                    .modifier(ShakeEffect(shakes: timeRemaining == 0 ? 2 : 0))
+                    .animation(Animation.linear)
                 
                 ZStack {
                     ForEach(0..<cards.count, id: \.self) { index in
@@ -125,6 +128,10 @@ struct ContentView: View {
             guard self.isActive else { return }
             if self.timeRemaining > 0 {
                 self.timeRemaining -= 1
+                self.prepareHaptics()
+            } else {
+                self.complexHaptic()
+                self.timer.upstream.connect().cancel()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
@@ -155,15 +162,75 @@ struct ContentView: View {
     }
     
     func resetCards() {
+        timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
         timeRemaining = 100
         isActive = true
         loadData()
     }
+    
+    func prepareHaptics() {
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+
+        do {
+            self.engine = try CHHapticEngine()
+            try engine?.start()
+            print("Prepered")
+        } catch {
+            print("There was an error creating the engine: \(error.localizedDescription).")
+        }
+    }
+    
+    func complexHaptic() {
+            // make sure that the divice supports haptics
+            guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+            var events = [CHHapticEvent]()
+
+            // create one intense, sharp tap
+            for i in stride(from: 0, to: 1, by: 0.1) {
+                let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: Float(i))
+                let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: Float(i))
+                let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: i)
+                events.append(event)
+            }
+
+            for i in stride(from: 0, to: 1, by: 0.1) {
+                let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: Float(1 - i))
+                let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: Float(1 - i))
+                let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 1 + i)
+                events.append(event)
+            }
+
+            // convert those events into a pattern and play it immediately
+            do {
+                let pattern = try CHHapticPattern(events: events, parameters: [])
+                let player = try engine?.makePlayer(with: pattern)
+                try player?.start(atTime: 0)
+                print("Executed")
+            } catch {
+                print("Failed to play pattern: \(error.localizedDescription).")
+            }
+        }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct ShakeEffect: GeometryEffect {
+    func effectValue(size: CGSize) -> ProjectionTransform {
+        return ProjectionTransform(CGAffineTransform(translationX: -30 * sin(position * 2 * .pi), y: 0))
+    }
+    
+    init(shakes: Int) {
+        position = CGFloat(shakes)
+    }
+    
+    var position: CGFloat
+    var animatableData: CGFloat {
+        get { position }
+        set { position = newValue }
     }
 }
 
